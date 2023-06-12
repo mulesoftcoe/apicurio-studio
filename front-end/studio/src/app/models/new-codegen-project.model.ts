@@ -21,5 +21,7 @@ export class NewCodegenProject {
     public projectConfig: any;
     public location: string;
     public publishInfo: any;
+    public deployment: string;
+    public templateType: string;
 
 }

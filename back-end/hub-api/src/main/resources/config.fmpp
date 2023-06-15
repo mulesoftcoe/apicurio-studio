@@ -1,0 +1,10 @@
+
+sourceRoot: templates
+outputRoot:out
+dataRoot:data
+data: {
+    json(mule-app-properties.json)
+}
+modes: [
+    ignore(**/*.p12)
+]

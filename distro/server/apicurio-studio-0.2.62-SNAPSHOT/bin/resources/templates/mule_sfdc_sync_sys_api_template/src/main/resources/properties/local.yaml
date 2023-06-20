@@ -1,0 +1,17 @@
+#properties for the local environment
+ 
+api:
+  id: "123456" 
+   
+#Http Listener Configuration
+http:
+  port: "8081"
+
+#sfdc Configuration
+
+sfdc:
+  username: "demo1"
+  url: "https://test.salesforce.com/services/Soap/u/50.0"
+  object: "orders"
+  fieldname: "details"
+

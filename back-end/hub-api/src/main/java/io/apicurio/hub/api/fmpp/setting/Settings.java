@@ -903,8 +903,7 @@ public class Settings {
         defs = STD_DEFS;
         defsCmdlNames = STD_DEFS_CMDL_NAMES;
         this.project=project;
-        excludedDirs.addAll(Arrays.asList("sync", "async", "batch", "azure", "jenkins"));
-    }
+        excludedDirs.addAll(Arrays.asList("connectors_version_template","mule_http_sync_api_template","mule_kafka_sync_exp_api_template","mule_kafka_sync_sys_api_template","mule_md365_api_template","mule_qr_code_generator_api_template","mule_sfdc_sync_sys_api_template","mule_sftp_sync_exp_api_template","mule_sftp_sync_sys_api_template","mule_sharepoint_sys_api_template","mule_sync_process_api_template","mule_batch_api_template", "Azure", "Jenkins"));    }
 
     /**
      * Defines a new setting. No setting with the same name can already exists.

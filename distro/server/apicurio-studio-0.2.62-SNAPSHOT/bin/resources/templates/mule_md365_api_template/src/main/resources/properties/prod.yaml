@@ -1,0 +1,18 @@
+#properties for the PROD environment
+
+api:
+  id: "123456" 
+  
+#Http Listener Configuration
+http:
+  port: "8081" 
+
+
+#Microsoft dynamics 365 configuration
+config-oauth-user-pass:
+  username: placeholder
+  password: placeholder
+  resource: placeholder
+  clientId: placeholder
+  clientSecret: placeholder
+  tokenRequestEndpoint: placeholder

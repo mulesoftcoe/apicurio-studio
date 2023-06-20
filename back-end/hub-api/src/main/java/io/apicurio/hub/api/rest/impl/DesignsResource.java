@@ -1274,7 +1274,6 @@ public class DesignsResource implements IDesignsResource {
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
-
                 return asResponse(settings, generator);
             }else if (project.getType() == CodegenProjectType.muleapp) {
                 File    cfgFile = new File("config.fmpp"); // load the cfg. of the the current dir.

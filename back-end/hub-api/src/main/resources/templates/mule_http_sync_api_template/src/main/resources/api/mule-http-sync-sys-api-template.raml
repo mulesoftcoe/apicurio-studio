@@ -1,0 +1,12 @@
+#%RAML 1.0
+title: http-template-api
+version: v1
+mediaType: [ application/json, application/xml]
+protocols: [ HTTP, HTTPS ]
+
+/cases:
+  get:
+    responses:
+      200:
+        body:
+          application/json:

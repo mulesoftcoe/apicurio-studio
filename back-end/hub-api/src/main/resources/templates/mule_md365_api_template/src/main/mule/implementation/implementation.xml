@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule
+	xmlns:dynamics="http://www.mulesoft.org/schema/mule/dynamics"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/dynamics http://www.mulesoft.org/schema/mule/dynamics/current/mule-dynamics.xsd">
+    <flow name="create-empty-contact-subflow">
+        <http:listener
+            config-ref="HttpsListenerConfig"
+            path="/createContact" doc:name="HTTP"/>
+        <logger message="Requested 'Create Contact Operation'"
+            level="INFO" doc:name="Logger"/>
+		<dynamics:create config-ref="Dynamics_365_config"
+            logicalName="contact" doc:name="Microsoft Dynamics 365">
+			<dynamics:attributes ><![CDATA[#[{}]]]></dynamics:attributes>
+		</dynamics:create>
+		<logger message="#['Received Response from &quot;Create Contact Operation&quot;:' ++ payload]" level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="create-empty-opportunity-subflow">
+        <http:listener config-ref="HttpsListenerConfig"
+            path="/createOpportunity" doc:name="HTTP"/>
+        <logger message="Requested 'Create Opportunity Operation'"
+            level="INFO" doc:name="Logger"/>
+		<dynamics:create config-ref="Dynamics_365_config"
+            logicalName="opportunity" doc:name="Microsoft Dynamics 365">
+			<dynamics:attributes ><![CDATA[#[{}]]]></dynamics:attributes>
+		</dynamics:create>
+        <logger message="#['Received Response from &quot;Create Opportunity Operation&quot;: ' ++ payload]" level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="create-account-subflow">
+        <http:listener config-ref="HttpsListenerConfig"
+            path="/createAccount" doc:name="HTTP"/>
+        <logger message="Requested 'Create Account Operation'"
+            level="INFO" doc:name="Logger"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+            	<ee:set-payload>
+            <![CDATA[%dw 2.0
+output application/java
+---
+{
+	name: payload.AccountName,
+	creditonhold: payload.CreditOnHold,
+	creditlimit: payload.CreditLimit,
+	"primarycontactid@odata.bind": "/contacts(" ++ payload.ContactID ++ ")"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+        <dynamics:create config-ref="Dynamics_365_config"
+            logicalName="account" doc:name="Microsoft Dynamics 365">
+            <dynamics:attributes>#[payload]</dynamics:attributes>
+        </dynamics:create>
+        <logger message="#['Received Response from &quot;Create Account Operation&quot; : ' ++ payload]" level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="create-multiple-entities-subflow">
+        <http:listener config-ref="HttpsListenerConfig"
+            path="/createMultipleAccounts" doc:name="HTTP"/>
+        <logger message="Requested 'Create Multiple Accounts Operation'"
+            level="INFO" doc:name="Logger"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+            	<ee:set-payload><![CDATA[%dw 2.0
+input payload application/json
+output application/java
+---
+payload map {
+      name: $.AccountName,
+      creditlimit : $.CreditLimit,
+      creditonhold : $.CreditOnHold
+}]]></ee:set-payload>
+			</ee:message>
+        </ee:transform>
+        <dynamics:create-multiple config-ref="Dynamics_365_config"
+            logicalName="account" doc:name="Microsoft Dynamics 365">
+            <dynamics:entities-attributes>#[payload]</dynamics:entities-attributes>
+        </dynamics:create-multiple>
+        <logger message="Received Response from 'Create Multiple Entities Operation'"
+            level="INFO" doc:name="Logger"/>
+        <ee:transform doc:name="Response to JSON"  >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+    <flow name="update-entity-subflow">
+        <http:listener config-ref="HttpsListenerConfig"
+            path="/updateAccount" doc:name="HTTP"/>
+        <logger message="Requested 'Update Entity Operation'"
+            level="INFO" doc:name="Logger"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+            	<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+	entityId: payload.EntityId,
+	attributes: {
+		creditlimit: payload.CreditLimit,
+		name: payload.AccountName
+	}
+}]]></ee:set-payload>
+			</ee:message>
+        </ee:transform>
+        <dynamics:update config-ref="Dynamics_365_config"
+            logicalName="account" doc:name="Microsoft Dynamics 365">
+            <dynamics:attributes>#[payload]</dynamics:attributes>
+        </dynamics:update>
+        <logger message="'Update Entity Operation' has ended with success"
+            level="INFO" doc:name="Logger"/>
+        <ee:transform doc:name="Response to JSON"  >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+    <flow name="update-multiple-entities-subflow">
+        <http:listener config-ref="HttpsListenerConfig"
+            path="/updateMultipleAccounts" doc:name="HTTP"/>
+        <logger message="Requested 'Update Multiple Entities Operation'"
+            level="INFO" doc:name="Logger"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+            	<ee:set-payload><![CDATA[%dw 2.0
+input payload application/json
+output application/java
+---
+payload map {
+	entityId: $.EntityId,
+	attributes: {
+		name: $.AccountName
+	}
+}]]></ee:set-payload>
+			</ee:message>
+        </ee:transform>
+        <dynamics:update-multiple config-ref="Dynamics_365_config"
+            logicalName="account" doc:name="Microsoft Dynamics 365">
+            <dynamics:entities-attributes>#[payload]</dynamics:entities-attributes>
+        </dynamics:update-multiple>
+        <logger message="Received Response from 'Update Multiple Entities Operation'"
+            level="INFO" doc:name="Logger"/>
+        <ee:transform doc:name="Response to JSON"  >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+    <flow name="delete-entity-subflow">
+        <http:listener config-ref="HttpsListenerConfig"
+            path="/deleteAccount" doc:name="HTTP"/>
+        <logger message="Requested 'Delete Entity Operation'"
+            level="INFO" doc:name="Logger"/>
+        <dynamics:delete config-ref="Dynamics_365_config"
+            logicalName="account" doc:name="Microsoft Dynamics 365">
+			<dynamics:id>#[payload.EntityId]</dynamics:id>
+		</dynamics:delete>
+        <logger message="'Delete Entity Operation' has ended with success"
+            level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="retrieve-entity-subflow">
+        <http:listener config-ref="HttpsListenerConfig"
+            path="/retrieveAccount" doc:name="HTTP"/>
+        <logger message="Requested 'Retrieve Entity Operation'"
+            level="INFO" doc:name="Logger"/>
+        <dynamics:retrieve config-ref="Dynamics_365_config"
+            logicalName="account" doc:name="Microsoft Dynamics 365">
+			<dynamics:id>#[payload.EntityId]</dynamics:id>
+		</dynamics:retrieve>
+        <logger message="Received Response from 'Retrieve Entity Operation'"
+            level="INFO" doc:name="Logger"/>
+        <ee:transform doc:name="Response to JSON"  >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+    <flow name="retrieve-multiple-entities-by-url-subflow">
+        <http:listener config-ref="HttpsListenerConfig"
+            path="/retrieveAccountsByURL" doc:name="HTTP"/>
+        <logger message="Requested 'Retrieve Multiple Operation'"
+            level="INFO" doc:name="Logger"/>
+        <dynamics:retrieve-multiple config-ref="Dynamics_365_config"
+            doc:name="Microsoft Dynamics 365">
+        	<dynamics:data-query-url>${config-oauth-user-pass.resource}/api/data/v8.2/accounts?$select=name,accountnumber&amp;$top=3</dynamics:data-query-url>
+        </dynamics:retrieve-multiple>
+
+        <logger message="Received Response from 'Retrieve Multiple Operation'"
+            level="INFO" doc:name="Logger"/>
+        <ee:transform doc:name="Response to JSON" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+    <flow name="retrieve-multiple-entities-by-query-subflow">
+        <http:listener config-ref="HttpsListenerConfig"
+            path="/retrieveAccountsByQuery" doc:name="HTTP"/>
+        <logger message="Requested 'Retrieve Multiple By Query Operation'"
+            level="INFO" doc:name="Logger"/>
+        <dynamics:retrieve-multiple-by-query
+            config-ref="Dynamics_365_config" doc:name="Microsoft Dynamics 365">
+        	<dynamics:query>dsql:SELECT accountid,accountnumber,name FROM accounts LIMIT 2</dynamics:query>
+        </dynamics:retrieve-multiple-by-query>
+
+        <logger message="Received Response from 'Retrieve Multiple By Query Operation'"
+            level="INFO" doc:name="Logger"/>
+		<ee:transform doc:name="Response to JSON">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+</mule>

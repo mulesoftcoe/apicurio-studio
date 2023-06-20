@@ -1,0 +1,18 @@
+#properties for the SBA environment
+  
+api:
+  id: "123456" 
+  
+#Http Listener Configuration
+http:
+  port: "8081"
+
+#sharepoint Configuration
+
+sharepoint:
+  username: "dummy"
+  password: "dummy"
+  url: "dummy"
+
+
+

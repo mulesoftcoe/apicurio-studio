@@ -1,9 +1,0 @@
-#properties for the DEV1 environment
-  
-api:
-  id: "123456"    
-  
-#Http Listener Configuration
-http:
-  port: "8081"
-

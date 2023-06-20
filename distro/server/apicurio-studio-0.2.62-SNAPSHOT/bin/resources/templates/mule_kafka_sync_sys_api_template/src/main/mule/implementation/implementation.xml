@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:kafka="http://www.mulesoft.org/schema/mule/kafka" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/kafka http://www.mulesoft.org/schema/mule/kafka/current/mule-kafka.xsd">
+	
+	<kafka:producer-config name="Apache_Kafka_Producer_configuration" doc:name="Apache Kafka Producer configuration" doc:id="a8ceae71-257b-4277-baa4-79faeceb2f5e" >
+		<kafka:producer-plaintext-connection >
+			<kafka:bootstrap-servers >
+				<kafka:bootstrap-server value="${kafka.server}" />
+			</kafka:bootstrap-servers>
+		</kafka:producer-plaintext-connection>
+	</kafka:producer-config>
+	<sub-flow name="implementationSub_Flow" doc:id="f29dac6c-f80b-4cce-8d76-185be49e20f4" >
+	<set-variable value='"ntt-cs-sftp-exp-api-subFlow"' doc:name="Set flowName" doc:id="8fc8e769-5f8f-47e6-a801-49f488dce907" variableName="flowName"/>
+		<flow-ref doc:name="logger-start-process-flow" doc:id="b30b8ccc-0e96-4bf5-bca4-0bc8724915f8" name="logger-start-process-flow"/>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: " Status message",
+
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<flow-ref doc:name="logger-payload-as-string-flow" doc:id="52c0a2bb-2a26-4905-8195-1c030d09aed7" name="logger-payload-as-string-flow"/>
+		<flow-ref doc:name="logger-before-kafka" doc:id="46f77e07-1319-4edf-9da8-696c6843dd34" name="logger-before-api-call-flow"/>
+		<kafka:publish doc:name="Publish" doc:id="1e6951a8-4f8d-42b1-8e4a-f9c287c56bbd" config-ref="Apache_Kafka_Producer_configuration" topic="${kafka.topic}" partition="${kafka.partition}" key="${kafka.key}"/>
+		<flow-ref doc:name="logger-after-kafka" doc:id="5588faa9-a53a-411f-bb87-bdbdce9de3c2" name="logger-after-api-call-flow"/>
+		<flow-ref doc:name="logger-payload-as-string-flow" doc:id="ee4bf1d2-05bb-4269-9f5a-d113090dcb64" name="logger-payload-as-string-flow"/>
+		<set-payload value='#[output application/json&#10;--- &#10;{ "Response": {   "Status": "Success",   "Code" : "200", &#10;	"Message": "Resource accepted"&#10;} }]' doc:name="Response" doc:id="1afbf1b3-ef3f-4e82-82ad-3e5ab5bfc20f" />
+		<flow-ref doc:name="logger-payload-as-string-flow" doc:id="ee2bfd2a-0fd2-4394-9c86-3ef555a5b709" name="logger-payload-as-string-flow" />
+		<flow-ref doc:name="logger-end-process-flow" doc:id="100cf107-bf5c-441b-abf3-2e11eabc873f" name="logger-end-process-flow"/>
+	
+	</sub-flow>
+</mule>

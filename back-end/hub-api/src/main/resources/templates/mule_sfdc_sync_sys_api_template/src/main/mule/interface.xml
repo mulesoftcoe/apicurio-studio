@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <http:listener-config name="mule-sfdc-sync-sys-api-template-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="mule-sfdc-sync-sys-api-template-config" api="mule-sfdc-sync-sys-api-template.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="sfdc-interface-main">
+        <http:listener config-ref="mule-sfdc-sync-sys-api-template-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <flow-ref doc:name="logger-payload-as-string-flow" doc:id="a3987691-eda4-48ad-a34a-2fc7c6debc43" name="logger-payload-as-string-flow" />
+		<ee:transform doc:name="set properties" doc:id="b2877207-04c9-4646-9374-deea5393d239">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="originatingApplication"><![CDATA[%dw 2.0
+output application/java
+---
+"template source"]]></ee:set-variable>
+				<ee:set-variable variableName="path"><![CDATA[%dw 2.0
+output application/java
+---
+attributes.requestPath]]></ee:set-variable>
+				<ee:set-variable variableName="service"><![CDATA[%dw 2.0
+output application/java
+---
+"template service"]]></ee:set-variable>
+				<ee:set-variable variableName="destinationApplication"><![CDATA[%dw 2.0
+output application/java
+---
+"template destination"]]></ee:set-variable>
+				<ee:set-variable variableName="bussinessProcessName"><![CDATA[%dw 2.0
+output application/java
+---
+"template business process"]]></ee:set-variable>
+				<ee:set-variable variableName="flowName"><![CDATA[%dw 2.0
+output application/java
+---
+"api-template-main"]]></ee:set-variable>
+				<ee:set-variable variableName="originalPayload"><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="generate-messageId-and-transactionId-subflow" doc:id="c0b1c55d-166f-4027-8226-dd014db534b1" name="generate-messageId-and-transactionId-subflow" />
+		<apikit:router config-ref="mule-sfdc-sync-sys-api-template-config" />
+    </flow>
+    <flow name="mule-sfdc-sync-sys-api-template-console">
+        <http:listener config-ref="mule-sfdc-sync-sys-api-template-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="mule-sfdc-sync-sys-api-template-config" />
+    </flow>
+    <flow name="get:\cases:mule-sfdc-sync-sys-api-template-config">
+        <ee:transform doc:name="set Context Properties" doc:id="3902cda6-322b-44b9-bfa2-2e25258bfbdf">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="context1"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+                <ee:set-variable variableName="context2"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+                <ee:set-variable variableName="context3"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+                <ee:set-variable variableName="context4"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+                <ee:set-variable variableName="flowName"><![CDATA[%dw 2.0
+output application/java
+---
+"post xtemplate"]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="logger api start flow" doc:id="0e052551-1e59-4312-a293-85b367c333f3" name="logger-api-start-flow" />
+        <flow-ref doc:name=" flow ref to implementationSub_Flow" doc:id="20367b6a-49d5-4b5c-8657-051323053dde" name="implementationSub_Flow" />
+        <flow-ref doc:name="logger api end flow" doc:id="c614e2f6-4736-41b3-afc3-83d8892510d9" name="logger-api-end-flow" />
+    </flow>
+</mule>

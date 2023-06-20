@@ -19,8 +19,32 @@ package io.apicurio.hub.api.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public enum CodegenTemplateType {
-    
-    sync, async, batch
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+@JsonDeserialize(using = CodegenTemplateTypeDeserializer.class)
+public enum CodegenTemplateType {
+
+    connectors_version_template("connectors_version_template"),
+    mule_http_sync_api_template("mule_http_sync_api_template"),
+    mule_batch_api_template("mule_batch_api_template"),
+    mule_kafka_sync_exp_api_template("mule_kafka_sync_exp_api_template"),
+    mule_kafka_sync_sys_api_template("mule_kafka_sync_sys_api_template"),
+    mule_md365_api_template("mule_md365_api_template"),
+    mule_qr_code_generator_api_template("mule_qr_code_generator_api_template"),
+    mule_sfdc_sync_sys_api_template("mule_sfdc_sync_sys_api_template"),
+    mule_sftp_sync_exp_api_template("mule_sftp_sync_exp_api_template"),
+    mule_sftp_sync_sys_api_template("mule_sftp_sync_sys_api_template"),
+    mule_sharepoint_sys_api_template("mule_sharepoint_sys_api_template"),
+    mule_sync_process_api_template("mule_sync_process_api_template");
+
+
+    final String templateName;
+
+    CodegenTemplateType(String templateName) {
+        this.templateName = templateName;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
 }

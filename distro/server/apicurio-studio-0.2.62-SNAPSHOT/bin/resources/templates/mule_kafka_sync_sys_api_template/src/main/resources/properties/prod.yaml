@@ -1,0 +1,16 @@
+#properties for the PROD environment
+
+api:
+  id: "123456" 
+  
+#Http Listener Configuration
+http:
+  port: "8081" 
+
+#kafka configuration
+  
+kafka:
+  server : "server"
+  partition: "partition"
+  topic: "topicname"
+  key : "1234"

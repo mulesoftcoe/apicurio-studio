@@ -1,0 +1,17 @@
+#properties for the local environment
+ 
+api:
+  id: "123456" 
+   
+#Http Listener Configuration
+http:
+  port: "8081"
+
+#sftp Configuration
+
+sftp:
+  host: "localhost"
+  port: "80"
+  directory: "/C:/software/test"
+  frequency: "1000"
+

@@ -55,9 +55,18 @@ export interface GenerateProjectWizardModel {
 ];*/
 
 var TEMPLATE_TYPES: DropDownOption[] = [
-    new Value("Sync", "sync"),
-    new Value("Async", "async"),
-    new Value("Batch", "batch"),
+    new Value("http sync api", "mule_http_sync_api_template"),
+    new Value("batch api", "mule_batch_api_template"),
+    new Value("connectors version", " connectors_version_template"),
+    new Value("kafka sync exp api", "mule_kafka_sync_exp_api_template"),
+    new Value("kafka sync sys api", "mule_kafka_sync_sys_api_template"),
+    new Value("md365 api", "mule_md365_api_template"),
+    new Value("qr code generator api", " mule_qr_code_generator_api_template"),
+    new Value("qr code generator api", "mule_qr_code_generator_api_template"),
+    new Value("sfdc sync sys api", "mule_sfdc_sync_sys_api_template"),
+    new Value("sftp sync exp api", "mule_sftp_sync_exp_api_template"),
+    new Value("sharepoint sys api", "mule_sharepoint_sys_api_template"),
+    new Value("sync process api", "mule_sync_process_api_template"),
 ];
 
 /*var DOMAIN_TYPES: DropDownOption[] = [

@@ -1,0 +1,18 @@
+#%RAML 1.0
+title: qr-code-generator-template-api
+version: v1
+mediaType: [ application/json, application/xml]
+protocols: [ HTTP, HTTPS ]
+
+/generateQrCode:
+  get:
+    queryParameters:
+      data:
+        displayName: data
+        description: data to be used to generate qr code
+        type: string
+        required: true
+    responses:
+      200:
+        body:
+          image/png:

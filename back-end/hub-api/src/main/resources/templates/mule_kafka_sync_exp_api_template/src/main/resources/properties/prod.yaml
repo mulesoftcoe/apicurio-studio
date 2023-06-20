@@ -1,0 +1,19 @@
+#properties for the PROD environment
+  
+api:
+  id: "123456"    
+  
+#kafka Configuration
+
+kafka:
+  server : "server"
+  partition: "partition"
+  topic: "topicname"
+
+
+http:
+  request:
+    protocol: "HTTP"
+    host: "mule-worker-internal-template-eu-e1.cloudhub.io"
+    port: "8091"
+    path: "api/orders"

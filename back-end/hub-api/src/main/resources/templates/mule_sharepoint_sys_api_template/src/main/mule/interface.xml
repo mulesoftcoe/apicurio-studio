@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <http:listener-config name="mule-sftp-sync-sys-api-template-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="mule-sharepoint-sys-api-template" api="mule-sharepoint-sys-api-template.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="mule-sharepoint-sys-api-template-main">
+        <http:listener config-ref="mule-sftp-sync-sys-api-template-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <flow-ref doc:name="logger-payload-as-string-flow" doc:id="374d4400-26f2-4a16-af90-6c7b67cb0d73" name="logger-payload-as-string-flow" />
+		<ee:transform doc:name="set properties" doc:id="ceca5d63-28b6-435e-9f2d-2a12f2401ace">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="originatingApplication"><![CDATA[%dw 2.0
+output application/java
+---
+"template source"]]></ee:set-variable>
+				<ee:set-variable variableName="path"><![CDATA[%dw 2.0
+output application/java
+---
+attributes.requestPath]]></ee:set-variable>
+				<ee:set-variable variableName="service"><![CDATA[%dw 2.0
+output application/java
+---
+"template service"]]></ee:set-variable>
+				<ee:set-variable variableName="destinationApplication"><![CDATA[%dw 2.0
+output application/java
+---
+"template destination"]]></ee:set-variable>
+				<ee:set-variable variableName="bussinessProcessName"><![CDATA[%dw 2.0
+output application/java
+---
+"template business process"]]></ee:set-variable>
+				<ee:set-variable variableName="flowName"><![CDATA[%dw 2.0
+output application/java
+---
+"api-template-main"]]></ee:set-variable>
+				<ee:set-variable variableName="originalPayload"><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="generate-messageId-and-transactionId-subflow" doc:id="90d8b01f-6965-498b-a8a5-37c4fd53109d" name="generate-messageId-and-transactionId-subflow" />
+		<apikit:router config-ref="mule-sharepoint-sys-api-template" />
+    </flow>
+    <flow name="mule-sharepoint-sys-api-template-console">
+        <http:listener config-ref="mule-sftp-sync-sys-api-template-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="mule-sharepoint-sys-api-template" />
+    </flow>
+    <flow name="get:\cases:mule-sharepoint-sys-api-template-config">
+        <ee:transform doc:name="set Context Properties" doc:id="53f08404-4c71-41de-bea6-db0c289911ff">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="context1"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+                <ee:set-variable variableName="context2"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+                <ee:set-variable variableName="context3"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+                <ee:set-variable variableName="context4"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+                <ee:set-variable variableName="flowName"><![CDATA[%dw 2.0
+output application/java
+---
+"post xtemplate"]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="logger api start flow" doc:id="d460f618-0af5-4f8f-9afc-dfb28f9d417c" name="logger-api-start-flow" />
+        <flow-ref doc:name=" flow ref to implementationSub_Flow" doc:id="8ef5a2b6-f806-4463-8598-1e8cf944e016" name="implementationSub_Flow" />
+        <flow-ref doc:name="logger api end flow" doc:id="3f039704-9707-4de7-b062-2ecddc378108" name="logger-api-end-flow" />
+    </flow>
+</mule>

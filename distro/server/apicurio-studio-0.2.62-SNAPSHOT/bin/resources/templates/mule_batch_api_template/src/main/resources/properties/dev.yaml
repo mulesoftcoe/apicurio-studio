@@ -1,0 +1,28 @@
+#properties for the DEV1 environment
+  
+api:
+  id: "123456"    
+  
+#Http Listener Configuration
+http:
+  port: "8081" 
+  request:
+    protocol: "HTTP"
+    host: "mule-worker-internal-nov-sales-order-process-api-dev.us-e1.cloudhub.io"
+    port: "8091"
+    path: "api/orders" 
+  
+batch:
+  data: 
+    host: "raw.githubusercontent.com"
+    port: "443"
+    path: "/tomwhite/covid-19-uk-data/master/data/raw/phw/csv/Tests_by_specimen_date.csv"
+    secure: "true"
+  scheduler:
+    frequency: "5"
+
+    
+cache:
+  failure:
+    ttl: "60"
+    interval: "30"  

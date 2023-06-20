@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:kafka="http://www.mulesoft.org/schema/mule/kafka"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/kafka http://www.mulesoft.org/schema/mule/kafka/current/mule-kafka.xsd">
+	<kafka:consumer-config name="Apache_Kafka_Consumer_configuration" doc:name="Apache Kafka Consumer configuration" doc:id="20f8ca18-70e7-4527-bd5c-3e31bb79ece2" >
+		<kafka:consumer-plaintext-connection >
+			<kafka:bootstrap-servers >
+				<kafka:bootstrap-server value="${kafka.server}" />
+			</kafka:bootstrap-servers>
+			<kafka:assignments >
+				<kafka:topic-partition topic="${kafka.topic}" partition="${kafka.partition}" />
+			</kafka:assignments>
+		</kafka:consumer-plaintext-connection>
+	</kafka:consumer-config>
+	<flow name="kafka-interface-main">
+		<kafka:message-listener doc:name="Message listener" doc:id="a2c8060a-00c5-453f-8d76-1c503ae3fefd" pollTimeout="1" pollTimeoutTimeUnit="MINUTES" ackMode="AUTO" config-ref="Apache_Kafka_Consumer_configuration"/>
+		<flow-ref doc:name="logger-payload-as-string-flow" doc:id="c5971804-8936-4c6a-a313-ea600ed5297c" name="logger-payload-as-string-flow"/>
+		<ee:transform doc:name="set properties"
+			doc:id="47e2f759-cb40-43fb-964c-27dd6549fb63">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable
+					variableName="originatingApplication"><![CDATA[%dw 2.0
+output application/java
+---
+"template source"]]></ee:set-variable>
+				<ee:set-variable variableName="path"><![CDATA[%dw 2.0
+output application/java
+---
+attributes.requestPath]]></ee:set-variable>
+				<ee:set-variable variableName="service"><![CDATA[%dw 2.0
+output application/java
+---
+"template service"]]></ee:set-variable>
+				<ee:set-variable
+					variableName="destinationApplication"><![CDATA[%dw 2.0
+output application/java
+---
+"template destination"]]></ee:set-variable>
+
+				<ee:set-variable variableName="bussinessProcessName"><![CDATA[%dw 2.0
+output application/java
+---
+"template business process"]]></ee:set-variable>
+				<ee:set-variable variableName="flowName" ><![CDATA[%dw 2.0
+output application/java
+---
+"api-template-main"]]></ee:set-variable>
+				<ee:set-variable variableName="originalPayload" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="generate-messageId-and-transactionId-subflow" doc:id="b0bec642-3206-4256-b159-0318a4b5ad65" name="generate-messageId-and-transactionId-subflow"/>
+		<ee:transform doc:name="set Context Properties" doc:id="23d7ede1-6abc-4672-8bcc-a740024062ee">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="context1"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+				<ee:set-variable variableName="context2"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+				<ee:set-variable variableName="context3"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+				<ee:set-variable variableName="context4"><![CDATA[%dw 2.0
+output application/java
+---
+""]]></ee:set-variable>
+				<ee:set-variable variableName="flowName"><![CDATA[%dw 2.0
+output application/java
+---
+"post xtemplate"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="logger api start flow" doc:id="1fce3895-7f91-42cc-9361-fced9c8bf3eb" name="logger-api-start-flow" />
+		<flow-ref doc:name="Flow Ref to implementation sub flow" doc:id="154f814f-c958-4c84-8324-b013493b1f00" name="implementationSub_Flow" />
+		<flow-ref doc:name="logger api end flow" doc:id="4afc1f87-b23a-4f08-8e84-7c9cc07192a3" name="logger-api-end-flow" />
+		
+	</flow>
+</mule>

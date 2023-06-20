@@ -1,0 +1,20 @@
+#properties for the SBA environment
+  
+api:
+  id: "123456"    
+  
+#sftp Configuration
+
+sftp:
+  host: "localhost"
+  port: "80"
+  directory: "/C:/software/test"
+  frequency: "1000"
+
+
+http:
+  request:
+    protocol: "HTTP"
+    host: "mule-worker-internal-template-eu-e1.cloudhub.io"
+    port: "8091"
+    path: "api/orders"

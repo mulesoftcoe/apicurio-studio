@@ -850,7 +850,8 @@ public class Engine {
         Files.list(directoryPath).forEach(path -> {
             // Create a java.io.File object for each file and add it to the list
         //    File file = path.toFile();
-            if(!excludedDirs.contains(path.getFileName().toString()))
+       //     if(!excludedDirs.contains(path.getFileName().toString()))
+            if (!excludedDirs.stream().anyMatch(dir -> dir.equalsIgnoreCase(path.getFileName().toString())))
             {
                 File file = new File(srcDir.getPath(), path.getFileName().toString());
                 fileList.add(file);

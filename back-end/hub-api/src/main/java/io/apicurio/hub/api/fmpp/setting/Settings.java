@@ -1651,7 +1651,7 @@ public class Settings {
         for (String str : choosenDirs) {
             String input = str.trim();
             for (int j = 0; j < excludedDirs.size(); j++) {
-                if (excludedDirs.get(j).equals(input)) {
+                if (excludedDirs.get(j).equalsIgnoreCase(input)) {
                     excludedDirs.remove(j);
                     removed = true;
                     // Reduce the index as the list has shifted

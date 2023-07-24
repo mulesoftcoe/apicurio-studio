@@ -1,4 +1,5 @@
 /**
+/**
  * @license
  * Copyright 2017 JBoss Inc
  *
@@ -34,7 +35,7 @@ import {Injectable} from "@angular/core";
 
 
 /**
- * An implementation of the Linked Accounts service that uses the Apicurio Studio back-end (Hub API) service
+ * An implementation of the Linked Accounts service that uses the Boilerplate back-end (Hub API) service
  * to store and retrieve relevant information for the user.
  */
 @Injectable()

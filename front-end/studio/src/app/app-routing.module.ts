@@ -18,6 +18,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
+import {DocumentsPageComponent} from './pages/documents/documents';
+import {DevopsPageComponent} from './pages/documents/devops/devops.page';
+import {MonitoringPageComponent} from './pages/documents/monitoring/monitoring.page';
+import {MiscellaneousPageComponent} from './pages/documents/miscellaneous/miscellaneous.page';
 import {AuthenticationCanActivateGuard} from './guards/auth.guard';
 import {SettingsPageComponent} from './pages/settings/settings';
 import {ProfilePageComponent} from './pages/settings/profile/profile.page';
@@ -48,6 +52,26 @@ const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: 'documents',
+        component: DocumentsPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/devops",
+        component: DevopsPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/miscellaneous",
+        component: MiscellaneousPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/monitoring",
+        component: MonitoringPageComponent,
         canActivate: [AuthenticationCanActivateGuard]
     },
     {

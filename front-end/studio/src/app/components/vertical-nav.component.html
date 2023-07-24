@@ -19,6 +19,11 @@
             <span class="fa fa-fw fa-bolt"></span>
             <div>APIs</div>
         </div>
+        <div id="api-nav-item-documents" class="api-nav-item" [class.active]="isDocumentsRoute()"
+             [class.selected]="currentSubMenu === subMenuTypes.Documents" (click)="toggleSubMenu(subMenuTypes.Documents)">
+            <span class="fa fa-fw fa-puzzle-piece	"></span>
+            <div>Documents</div>
+        </div>
         <div id="api-nav-item-settings" class="api-nav-item" [class.active]="isSettingsRoute()"
              [class.selected]="currentSubMenu === subMenuTypes.Settings" (click)="toggleSubMenu(subMenuTypes.Settings)">
             <span class="fa fa-fw fa-cogs"></span>
@@ -53,6 +58,19 @@
             </div>
             <div class="action" [class.active]="isRouteActive('/settings/validation')">
                 <a routerLink="/settings/validation"><span class="fa fa-fw fa-exclamation-triangle"></span><span>Validation</span></a>
+            </div>
+        </div>
+        <!-- Documents -->
+        <div id="api-nav-detail-documents" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.Documents">
+            <h3>Documents</h3>
+            <div class="action" [class.active]="isRouteActive('/documents/devops')">
+                <a routerLink="/documents/devops"><span class="fa fa-fw fa-list"></span><span>DevOps</span></a>
+            </div>
+            <div class="action" [class.active]="isRouteActive('/documents/monitoring')">
+                <a routerLink="/documents/monitoring"><span class="fa fa-fw fa-list"></span><span>Monitoring</span></a>
+            </div>
+            <div class="action" [class.active]="isRouteActive('/documents/miscellaneous')">
+                <a routerLink="/documents/miscellaneous"><span class="fa fa-fw fa-list"></span><span>Miscellaneous</span></a>
             </div>
         </div>
     </div>

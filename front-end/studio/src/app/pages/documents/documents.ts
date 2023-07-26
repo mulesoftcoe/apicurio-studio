@@ -51,7 +51,7 @@ export class DocumentsPageComponent extends AbstractPageComponent {
      * @see AbstractPageComponent.loadAsyncPageData()
      */
     public loadAsyncPageData(): void {
-        console.info("[DocumentsPageComponent] Redirecting to 'devops'");
-        this.router.navigate([ "/documents/devops" ]);
+        console.info("[DocumentsPageComponent] Redirecting to 'architecture'");
+        this.router.navigate([ "/documents/architecture" ]);
     }
 }

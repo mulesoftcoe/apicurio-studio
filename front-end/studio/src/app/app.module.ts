@@ -31,6 +31,12 @@ import {DocumentsPageComponent} from './pages/documents/documents';
 import {DevopsPageComponent} from './pages/documents/devops/devops.page';
 import {MonitoringPageComponent} from './pages/documents/monitoring/monitoring.page';
 import {MiscellaneousPageComponent} from './pages/documents/miscellaneous/miscellaneous.page';
+import {SecurityPageComponent} from './pages/documents/security/security.page';
+import {TestingPageComponent} from './pages/documents/testing/testing.page';
+import {ReliabilityFrameworkPageComponent} from './pages/documents/reliabilityframework/reliabilityframework.page';
+import {CodePageComponent} from './pages/documents/code/code.page';
+import {DesignPageComponent} from './pages/documents/design/design.page';
+import {ArchitecturePageComponent} from './pages/documents/architecture/architecture.page';
 import {BreadcrumbsComponent} from './components/breadcrumbs/breadcrumbs.component';
 import {BreadcrumbComponent} from './components/breadcrumbs/breadcrumb.component';
 import {PageErrorComponent} from './components/page-error.component';
@@ -95,8 +101,9 @@ import {TemplateEditorComponent} from "./pages/templates/_components/template-ed
     ],
     declarations: [
         AppComponent, DashboardPageComponent, DocumentsNavComponent, DocumentsPageComponent, DevopsPageComponent,
-        MonitoringPageComponent, MiscellaneousPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
-        VerticalNavComponent, ConfirmDeleteDialogComponent, InvitationDialogComponent, ValidationPageComponent,
+        MonitoringPageComponent, MiscellaneousPageComponent, SecurityPageComponent, TestingPageComponent, ReliabilityFrameworkPageComponent,
+        CodePageComponent, DesignPageComponent, ArchitecturePageComponent, BreadcrumbsComponent, BreadcrumbComponent,
+        PageErrorComponent, VerticalNavComponent, ConfirmDeleteDialogComponent, InvitationDialogComponent, ValidationPageComponent,
         NotFoundPageComponent, SettingsNavComponent, CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent,
         ProfilePageComponent, SettingsPageComponent, ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent,
         ImportApiFormComponent, CreateApiFormComponent, ApisListComponent, ApisCardsComponent, CopyPageComponent,

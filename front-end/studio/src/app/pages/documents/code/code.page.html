@@ -1,0 +1,37 @@
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="Documents" [route]="[ '/documents' ]"></li>
+        <li breadcrumb label="Code" ></li>
+    </breadcrumbs>
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid" *ngIf="!pageError">
+    <div class="row" style="min-height: 35px"></div>
+    <div class="row row-cards-pf">
+        <div class="col-xs-12 col-sm-2">
+            <documents-nav tab="code"></documents-nav>
+        </div>
+        <div class="col-xs-12 col-sm-5">
+            <div class="card-pf card-pf-accented">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span>Code</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    
+                     <p>
+                        Hey <strong>{{ user().name }}</strong>, Please click on below link to read documents related to Code.
+                    </p>
+                    <div class="user-info">
+                        <div>
+                           
+                             <a href="https://nttdata.gitbook.io/devops-documents/" target="_blank">Code BoilerPlate</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

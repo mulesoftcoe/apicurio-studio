@@ -877,7 +877,8 @@ public class CommandLine {
             Throwable abortingExc = null;
             try {
                 ZipOutputStream zos= NullZipOutputStream.INSTANCE;
-                settings.execute(zos);
+                String openApiDoc = null;
+                settings.execute(zos, openApiDoc);
             } catch (ProcessingException e) {
                 abortingExc = e;
             }

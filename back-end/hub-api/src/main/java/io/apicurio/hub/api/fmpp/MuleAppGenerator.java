@@ -1,11 +1,12 @@
 package io.apicurio.hub.api.fmpp;
 
 import io.apicurio.hub.api.fmpp.setting.Settings;
+import org.apache.commons.io.IOUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -13,6 +14,9 @@ public class MuleAppGenerator {
 
 
     protected Settings settings;
+    protected String openApiDoc;
+
+    protected static Charset utf8 = StandardCharsets.UTF_8;
     /**
      * Configure the settings.
      *
@@ -34,7 +38,14 @@ public class MuleAppGenerator {
 
         try (ZipOutputStream zos = new ZipOutputStream(output)) {
             try {
-                settings.execute(zos);
+                settings.execute(zos,openApiDoc);
+               /* String templateType=settings.getProject().getAttributes().get("templateType");
+                    String specPath = "out/templateType/"+"src/main/resources/" +"META-INF/openapi.json";
+                    log.append("Generating " + specPath + "\r\n");
+                    zos.putNextEntry(new ZipEntry(specPath));
+                    zos.write(this.openApiDoc.getBytes(utf8));
+                    zos.closeEntry();*/
+
             } catch (Exception e) {
                 // If we get an error, put an PROJECT_GENERATION_ERROR file into the ZIP.
                 zos.putNextEntry(new ZipEntry("PROJECT_GENERATION_FAILED.txt"));
@@ -48,6 +59,10 @@ public class MuleAppGenerator {
                 e.printStackTrace(writer);
                 writer.flush();
                 zos.closeEntry();
+            }
+            finally {
+                //zos.getZipFileWriter().close();
+               // cleanupSession();
             }
         }
     }
@@ -64,6 +79,37 @@ public class MuleAppGenerator {
             this.generate(output);
             return output;
         }
+    }
+
+    public void setOpenApiDocument(String content) {
+        this.openApiDoc = content;
+    }
+
+    public void setOpenApiDocument(URL url) throws IOException {
+        InputStream is = url.openStream();
+
+        try {
+            this.setOpenApiDocument(is);
+        } catch (Throwable var6) {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (Throwable var5) {
+                    var6.addSuppressed(var5);
+                }
+            }
+
+            throw var6;
+        }
+
+        if (is != null) {
+            is.close();
+        }
+
+    }
+
+    public void setOpenApiDocument(InputStream stream) throws IOException {
+        this.openApiDoc = IOUtils.toString(stream, utf8);
     }
 
 }

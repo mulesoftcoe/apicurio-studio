@@ -57,7 +57,8 @@ public class FileProcessingServlet extends HttpServlet {
             ss.load(cfgFile);
          //   ss.addProgressListener(new ConsoleProgressListener());
             ZipOutputStream zos= NullZipOutputStream.INSTANCE;
-            ss.execute(zos);
+            String openApiDoc = null;
+            ss.execute(zos, openApiDoc);
             System.out.println("Done.");
         } catch (SettingException e) {
             System.err.println(MiscUtil.causeMessages(e));

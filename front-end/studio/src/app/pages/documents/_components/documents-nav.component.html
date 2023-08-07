@@ -1,0 +1,18 @@
+<div class="panel panel-default panel-documents">
+    <div class="panel-heading">
+        <h3 class="panel-title">Documents</h3>
+    </div>
+    <div class="panel-body">
+        <ul class="nav nav-documents">
+            <li role="presentation" [class.active]="tab === 'architecture'"><a [routerLink]="['/documents/architecture']">Architecture</a></li>
+            <li role="presentation" [class.active]="tab === 'code'"><a [routerLink]="['/documents/code']">Code</a></li>
+            <li role="presentation" [class.active]="tab === 'design'"><a [routerLink]="['/documents/design']">Design</a></li>
+            <li role="presentation" [class.active]="tab === 'devops'"><a [routerLink]="['/documents/devops']">DevOps</a></li>
+            <li role="presentation" [class.active]="tab === 'miscellaneous'"><a [routerLink]="['/documents/miscellaneous']">Miscellaneous</a></li>
+            <li role="presentation" [class.active]="tab === 'monitoring'"><a [routerLink]="['/documents/monitoring']">Monitoring</a></li>
+            <li role="presentation" [class.active]="tab === 'reliabilityframework'"><a [routerLink]="['/documents/reliabilityframework']">Reliability Framework</a></li>
+            <li role="presentation" [class.active]="tab === 'security'"><a [routerLink]="['/documents/security']">Security</a></li>
+            <li role="presentation" [class.active]="tab === 'testing'"><a [routerLink]="['/documents/testing']">Testing</a></li>
+        </ul>
+    </div>
+</div>

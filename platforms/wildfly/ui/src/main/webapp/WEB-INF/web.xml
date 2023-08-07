@@ -50,7 +50,11 @@
     <servlet-name>AngularServlet</servlet-name>
     <url-pattern>/settings/*</url-pattern>
   </servlet-mapping>
-
+  <servlet-mapping>
+    <servlet-name>AngularServlet</servlet-name>
+    <url-pattern>/documents/*</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>StudioConfigServlet</servlet-name>
     <servlet-class>io.apicurio.studio.fe.servlet.servlets.StudioConfigServlet</servlet-class>
@@ -131,6 +135,7 @@
       <url-pattern>/logout</url-pattern>
       <url-pattern>/config.js</url-pattern>
       <url-pattern>/settings/*</url-pattern>
+	  <url-pattern>/documents/*</url-pattern>
       <url-pattern>/dashboard</url-pattern>
       <url-pattern>/apis/*</url-pattern>
       <url-pattern>/templates</url-pattern>
@@ -144,7 +149,7 @@
 
   <login-config>
     <auth-method>KEYCLOAK</auth-method>
-  </login-config>
+  </login-config> 
 
   <security-role>
     <role-name>*</role-name>

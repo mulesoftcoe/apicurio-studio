@@ -78,7 +78,7 @@ import java.util.zip.ZipOutputStream;
  * </ul>
  *
  * <p>You can execute the processing session described by the setting with
- * {@link #execute(ZipOutputStream)}.
+ * {@link #execute(ZipOutputStream, String)}.
  */
 public class Settings {
 
@@ -650,7 +650,7 @@ public class Settings {
      * value of the "data" setting is a <code>List</code> that records the
      * changes made on the setting, and not a <code>Map</code>. The
      * <code>Map</code> will be built internally based on the list when you call
-     * {@link #execute(ZipOutputStream)}.
+     * {@link #execute(ZipOutputStream, String)}.
      */  
     public static final SettingType TYPE_DATA_MODEL = new SettingType() {
 
@@ -1223,8 +1223,8 @@ public class Settings {
      * object will be created and initialized, even if you didn't changed the
      * settings since the last call. If this overhead is not acceptable
      * in you case, you can call <code>Engine.process(...)</code> for multiple
-     * times within the same {@link #execute(ZipOutputStream zos)} call, by overriding the
-     * {@link #doProcessing(Engine, File[], File, File, ZipOutputStream zos)} method.
+     * times within the same {@link #execute(ZipOutputStream, String)} call, by overriding the
+     * {@link #doProcessing(Engine, File[], File, File, ZipOutputStream, String)} method.
      * Also, you can do extra engine initalization there.
      *
      * @throws SettingException if the settings are not correct, or can't be
@@ -1239,7 +1239,7 @@ public class Settings {
      *     termination. Note that all (so even non-checked exceptions) thrown be
      *     the engine are catched and wrapped by this exeption.
      */
-    public void execute(ZipOutputStream zos) throws SettingException, ProcessingException, IOException {
+    public void execute(ZipOutputStream zos, String openApiDoc) throws SettingException, ProcessingException, IOException {
         final Version recommendedDefaults;
         {
             String s = (String) get(NAME_RECOMMENDED_DEFAULTS);
@@ -1651,7 +1651,7 @@ public class Settings {
         for (String str : choosenDirs) {
             String input = str.trim();
             for (int j = 0; j < excludedDirs.size(); j++) {
-                if (excludedDirs.get(j).equals(input)) {
+                if (excludedDirs.get(j).equalsIgnoreCase(input)) {
                     excludedDirs.remove(j);
                     removed = true;
                     // Reduce the index as the list has shifted
@@ -2114,16 +2114,16 @@ public class Settings {
             for (i = 0; i < ln; i++) {
                 ss[i] = (File) sources.get(i);
             }
-            doProcessing(eng, ss, null, null,zos);
+            doProcessing(eng, ss, null, null,zos, openApiDoc);
         } else {
-            doProcessing(eng, null, sourceFile, outputFile,zos);
+            doProcessing(eng, null, sourceFile, outputFile,zos,openApiDoc);
         }
     }
 
     /**
      * Adds a progress listener. The progress listener will be added to the
      * internally used {@link Engine} object when you call
-     * {@link #execute(ZipOutputStream)}.
+     * {@link #execute(ZipOutputStream, String)}.
      *
      * @see #clearProgressListeners()
      */
@@ -2142,7 +2142,7 @@ public class Settings {
 
     /**
      * Sets an engine attribute. The attribute will be set in the internally
-     * used {@link Engine} object when you call {@link #execute(ZipOutputStream)}.
+     * used {@link Engine} object when you call {@link #execute(ZipOutputStream, String)}.
      *
      * @return The  previous value of the attribute, or <code>null</code> if
      *     there was no attribute with the given name.
@@ -2332,30 +2332,31 @@ public class Settings {
      * <code>Engine</code> object, call its methods directly.
      *
      * <p>An implementation of this method may leak out the initialized
-     * <code>Engine</code> object for the caller of {@link #execute(ZipOutputStream)}. Also, it
+     * <code>Engine</code> object for the caller of {@link #execute(ZipOutputStream, String)}. Also, it
      * may does not call <code>Engine.proccess(...)</code>, but left it for the
      * caller (who has the out-leaked <code>Engine</code> object). These are
      * extreme, but otherwise legitimate usages.
-     *
-     * @param eng the already initialized <code>Engine</code> object. You may
+     *  @param eng the already initialized <code>Engine</code> object. You may
      *     do extra addjustments on it.
-     * @param sources the list of source files, the parameter to
-     *     {@link Engine#process(File[], ZipOutputStream,String)}. It's <code>null</code> if
-     *     the processing session uses <code>outputFile</code> setting.
+     *
+     * @param sources    the list of source files, the parameter to
+     *                   {@link Engine#process(File[], ZipOutputStream, String, String)}. It's <code>null</code> if
+     *                   the processing session uses <code>outputFile</code> setting.
      * @param sourceFile if the session uses <code>outputFile</code> setting,
-     *     then it' the 1st parameter to
-     *     {@link Engine#process(File, File, ZipOutputStream)}, otherwise it is null.
+     *                   then it' the 1st parameter to
+     *                   {@link Engine#process(File, File, ZipOutputStream, String)}, otherwise it is null.
      * @param outputFile if the session uses <code>outputFile</code> setting,
-     *     then it' the 2nd parameter to
-     *     {@link Engine#process(File, File, ZipOutputStream)}, otherwise it is null.
+     *                   then it' the 2nd parameter to
+     *                   {@link Engine#process(File, File, ZipOutputStream, String)}, otherwise it is null.
+     * @param openApiDoc
      */
     protected void doProcessing(
-            Engine eng, File[] sources, File sourceFile, File outputFile, ZipOutputStream zos)
+            Engine eng, File[] sources, File sourceFile, File outputFile, ZipOutputStream zos, String openApiDoc)
             throws SettingException, ProcessingException {
         if (outputFile == null) {
-            eng.process(sources,zos, baseDir.getPath() );
+            eng.process(sources,zos, baseDir.getPath(),openApiDoc );
         } else {
-            eng.process(sourceFile, outputFile,zos);
+            eng.process(sourceFile, outputFile,zos,openApiDoc);
         }
     }
 

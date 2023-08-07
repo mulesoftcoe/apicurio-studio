@@ -1285,6 +1285,7 @@ public class DesignsResource implements IDesignsResource {
                     ss.load(cfgFile);
                     final MuleAppGenerator generator = new MuleAppGenerator();
                     generator.setSettings(ss);
+                    generator.setOpenApiDocument(content);
                     System.out.println("Done.");
                     //  InputStream inputStream = asResponse(ss, generator).readEntity(InputStream.class);
                     return asResponse(ss, generator);

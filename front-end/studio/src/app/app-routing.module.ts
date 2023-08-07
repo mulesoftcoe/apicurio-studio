@@ -18,6 +18,16 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
+import {DocumentsPageComponent} from './pages/documents/documents';
+import {DevopsPageComponent} from './pages/documents/devops/devops.page';
+import {MonitoringPageComponent} from './pages/documents/monitoring/monitoring.page';
+import {MiscellaneousPageComponent} from './pages/documents/miscellaneous/miscellaneous.page';
+import {SecurityPageComponent} from './pages/documents/security/security.page';
+import {TestingPageComponent} from './pages/documents/testing/testing.page';
+import {ReliabilityFrameworkPageComponent} from './pages/documents/reliabilityframework/reliabilityframework.page';
+import {CodePageComponent} from './pages/documents/code/code.page';
+import {DesignPageComponent} from './pages/documents/design/design.page';
+import {ArchitecturePageComponent} from './pages/documents/architecture/architecture.page';
 import {AuthenticationCanActivateGuard} from './guards/auth.guard';
 import {SettingsPageComponent} from './pages/settings/settings';
 import {ProfilePageComponent} from './pages/settings/profile/profile.page';
@@ -48,6 +58,56 @@ const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: 'documents',
+        component: DocumentsPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/devops",
+        component: DevopsPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/miscellaneous",
+        component: MiscellaneousPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/monitoring",
+        component: MonitoringPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/code",
+        component: CodePageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/reliabilityframework",
+        component: ReliabilityFrameworkPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/testing",
+        component: TestingPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/security",
+        component: SecurityPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/design",
+        component: DesignPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "documents/architecture",
+        component: ArchitecturePageComponent,
         canActivate: [AuthenticationCanActivateGuard]
     },
     {

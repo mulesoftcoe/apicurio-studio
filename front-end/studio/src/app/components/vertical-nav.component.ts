@@ -27,7 +27,7 @@ import {ApicurioRole} from "../models/apicurio-role.enum";
  * Models the sub-menus off the main left-hand vertical nav.
  */
 export enum VerticalNavSubMenuType {
-    None, Dashboard, APIs, Settings, Templates
+    None, Dashboard, APIs, Documents, Settings, Templates
 }
 
 
@@ -114,7 +114,15 @@ export class VerticalNavComponent implements OnInit {
     isSettingsRoute(): boolean {
         return this.isRouteActive("/settings");
     }
-    
+
+    /**
+     * Returns true if the currently active route is the documents.
+     * @returns {boolean}
+     */
+    isDocumentsRoute(): boolean {
+        return this.isRouteActive("/documents");
+    }
+
     /**
      * Returns true if the templates route should be accessible.
      * @returns {boolean}

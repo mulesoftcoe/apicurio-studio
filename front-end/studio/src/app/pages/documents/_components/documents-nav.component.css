@@ -1,0 +1,17 @@
+.panel-documents {
+}
+.panel-documents .panel-body {
+  padding: 0px;
+}
+.panel-documents .panel-body .nav-documents {
+}
+.panel-documents .panel-body .nav-documents li {
+}
+.panel-documents .panel-body .nav-documents li a {
+}
+.panel-documents .panel-body .nav-documents li.active {
+}
+.panel-documents .panel-body .nav-documents li.active a {
+  color: white;
+  background-color: #0088ce;
+}

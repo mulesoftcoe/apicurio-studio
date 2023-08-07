@@ -35,12 +35,15 @@ import org.w3c.dom.Document;
 import io.apicurio.hub.api.fmpp.util.MiscUtil;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -250,6 +253,7 @@ public class Engine {
     private FmppOutputWriter out;
     public CodegenProject project;
     List<String> excludedDirs = new ArrayList<>();
+    protected static Charset utf8 = StandardCharsets.UTF_8;
     /**
      * Same as {@link #Engine(Version) Engine((Version) null)}.
      *
@@ -452,22 +456,21 @@ public class Engine {
      * <p>The source root and output root directory must be set (non-null) prior
      * to calling this method.
      *
-     * @see #process(File, File, ZipOutputStream)
-     *
-     * @param sources The list of files to process. All file must be inside
-     *      the source root. The files will be processed in the order as they
-     *      appear in the list, except that if you use multiple turns, they
-     *      are re-sorted based on the associated turns (the original order
-     *      of files is kept inside turns).
-     *
+     * @param sources    The list of files to process. All file must be inside
+     *                   the source root. The files will be processed in the order as they
+     *                   appear in the list, except that if you use multiple turns, they
+     *                   are re-sorted based on the associated turns (the original order
+     *                   of files is kept inside turns).
+     * @param openApiDoc
      * @throws ProcessingException if {@code Engine.process} has
-     *     thrown any exception. The message of this exception holds nothing
-     *     interesting (just a static text). Call its {@code getCause()}
-     *     method to get the exception that caused the termination. Note that
-     *     all (so even non-checked exceptions) thrown be the engine are
-     *     catched and wrapped by this exeption.
+     *                             thrown any exception. The message of this exception holds nothing
+     *                             interesting (just a static text). Call its {@code getCause()}
+     *                             method to get the exception that caused the termination. Note that
+     *                             all (so even non-checked exceptions) thrown be the engine are
+     *                             catched and wrapped by this exeption.
+     * @see #process(File, File, ZipOutputStream, String)
      */
-    public void process(File[] sources, ZipOutputStream zos,String baseDir)
+    public void process(File[] sources, ZipOutputStream zos, String baseDir, String openApiDoc)
             throws ProcessingException {
         progListeners.notifyProgressEvent(
                 this,
@@ -522,11 +525,17 @@ public class Engine {
                 out.getZipFileWriter().write(out.getBaos().toByteArray());
                 out.getZipFileWriter().closeEntry();
                 // Save the zip archive to a file
-                try (FileOutputStream fos = new FileOutputStream("example.zip")) {
+                String templateType=getProject().getAttributes().get("templateType");
+                String specPath = "out/"+templateType+"/src/main/resources/" +"META-INF/openapi.json";
+               // log.append("Generating " + specPath + "\r\n");
+                out.getZipFileWriter().putNextEntry(new ZipEntry(specPath));
+                out.getZipFileWriter().write(openApiDoc.getBytes(utf8));
+                out.getZipFileWriter().closeEntry();
+                /*try (FileOutputStream fos = new FileOutputStream("example.zip")) {
                     out.getBaosClone().writeTo(fos);
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
             } finally {
                 out.getZipFileWriter().close();
                 cleanupSession();
@@ -587,19 +596,18 @@ public class Engine {
      * will be set for the time of this method call to the parent directories of
      * the source and output files respectively.
      *
-     * @see #process(File[], ZipOutputStream, String )
-     *
-     * @param src the source file (not directory). Can't be null.
-     * @param out the output file (not directory). Can't be null.
-     *
+     * @param src        the source file (not directory). Can't be null.
+     * @param out        the output file (not directory). Can't be null.
+     * @param openApiDoc
      * @throws ProcessingException if {@code Engine.process} has
-     *     thrown any exception. The message of this exception holds nothing
-     *     interesting (just a static text). Call its {@code getCause()}
-     *     method to get the exception that caused the termination. Note that
-     *     all (so even non-checked exceptions) thrown be the engine are
-     *     catched and wrapped by this exception.
+     *                             thrown any exception. The message of this exception holds nothing
+     *                             interesting (just a static text). Call its {@code getCause()}
+     *                             method to get the exception that caused the termination. Note that
+     *                             all (so even non-checked exceptions) thrown be the engine are
+     *                             catched and wrapped by this exception.
+     * @see #process(File[], ZipOutputStream, String, String)
      */
-    public void process(File src, File out, ZipOutputStream zos)
+    public void process(File src, File out, ZipOutputStream zos, String openApiDoc)
             throws ProcessingException {
         progListeners.notifyProgressEvent(
                 this,
@@ -850,7 +858,8 @@ public class Engine {
         Files.list(directoryPath).forEach(path -> {
             // Create a java.io.File object for each file and add it to the list
         //    File file = path.toFile();
-            if(!excludedDirs.contains(path.getFileName().toString()))
+       //     if(!excludedDirs.contains(path.getFileName().toString()))
+            if (!excludedDirs.stream().anyMatch(dir -> dir.equalsIgnoreCase(path.getFileName().toString())))
             {
                 File file = new File(srcDir.getPath(), path.getFileName().toString());
                 fileList.add(file);

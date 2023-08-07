@@ -89,29 +89,21 @@
                 </button>
             </div>
             <div class="modal-body">
-                <h1 class="about-title">Apicurio Studio</h1>
+                <h1 class="about-title">Boilerplate</h1>
                 <div class="product-versions-pf">
                     <table>
                         <tr>
-                            <td><strong>Version</strong></td>
+                            <td><strong>Version:</strong></td>
                             <td>{{ version }}</td>
                         </tr>
                         <tr>
-                            <td><strong>Built On</strong></td>
-                            <td>{{ builtOn | date }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Edition</strong></td>
-                            <td>CLIv7</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Project URL</strong><span>&nbsp;</span></td>
-                            <td><a href="{{ projectUrl }}" target="_blank">{{ projectUrl }} <span class="fa fa-external-link"></span></a></td>
+                            <td><strong>Build Date:&nbsp;</strong></td>
+                            <td style="text-transform:capitalize;"> {{ builtOn | date }}</td>
                         </tr>
                     </table>
                 </div>
                 <div class="trademark-pf">
-                    &copy; 2019 Red Hat, Inc (JBoss Middleware)
+                    &copy; NTT Data
                 </div>
             </div>
             <div class="modal-footer">

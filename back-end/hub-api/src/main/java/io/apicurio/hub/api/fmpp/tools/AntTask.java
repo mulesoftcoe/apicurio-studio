@@ -579,7 +579,8 @@ public class AntTask extends org.apache.tools.ant.taskdefs.MatchingTask {
             ss.setDontTraverseDirectories(true);
             try {
                 ZipOutputStream zos= NullZipOutputStream.INSTANCE;
-                ss.execute(zos);
+                String openApiDoc = null;
+                ss.execute(zos, openApiDoc);
                 if (antProgressListener.getErrorCount() != 0) {
                     if (antTaskFailOnError) {
                         throw new CausePrinterBuildException(
